@@ -43,7 +43,7 @@ public class EmailValidationService {
                 user.getEmail(),
                 user.getUsername(),
                 EmailTemplateName.ACTIVATE_ACCOUNT,
-                activationUrl,
+                activationUrl + activationCode,
                 activationCode,
                 "Account activation"
         );

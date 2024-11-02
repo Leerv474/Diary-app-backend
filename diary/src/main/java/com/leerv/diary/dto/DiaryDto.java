@@ -13,5 +13,6 @@ public class DiaryDto {
     private String title;
     private String content;
     private Long archiveStorageTime;
+    private boolean isArchived;
     private List<Long> mediaIdList;
 }

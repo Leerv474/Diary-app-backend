@@ -8,6 +8,7 @@ import com.leerv.diary.exception.DiaryException;
 import com.leerv.diary.repositories.DiaryRepository;
 import com.leerv.diary.repositories.MediaRepository;
 import com.leerv.diary.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -200,6 +201,7 @@ public class DiaryService {
                         .build()).toList();
     }
 
+    @Transactional
     public void removeTag(@Valid DiaryTagDto request, Authentication connectedUser) {
         Diary diary = diaryRepository.findById(request.getDiaryId())
                 .orElseThrow(() -> new DiaryException("Diary not found"));
@@ -210,5 +212,22 @@ public class DiaryService {
         }
         diary.getTags().remove(request.getTag());
         diaryRepository.save(diary);
+    }
+
+    public DiaryDto getDiary(Long id, Authentication connectedUser) {
+        Diary diary = diaryRepository.findById(id)
+                .orElseThrow(() -> new DiaryException("Diary not found"));
+        User user = (User) connectedUser.getPrincipal();
+        boolean isOwner = diary.getUsers().stream().anyMatch(owner -> owner.getId().equals(user.getId()));
+        if (!isOwner) {
+            throw new DiaryException("You do not have the rights to access this diary");
+        }
+        return DiaryDto.builder()
+                .id(diary.getId())
+                .title(diary.getTitle())
+                .content(diary.getContent())
+                .isArchived(diary.isArchived())
+                .archiveStorageTime(diary.getArchiveStorageTime())
+                .build();
     }
 }

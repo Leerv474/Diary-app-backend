@@ -37,6 +37,10 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        if (request.getServletPath().contains("/swagger-ui")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         final String authHeaders = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String accessToken;
         final String username;

@@ -120,4 +120,12 @@ public class DiaryController {
     ) {
         return ResponseEntity.ok(diaryService.listAll(connectedUser));
     }
+
+    @GetMapping("/diary/{id}")
+    public ResponseEntity<DiaryDto> getDiary(
+            @RequestParam Long id,
+            Authentication connectedUser
+    ) {
+        return ResponseEntity.ok(diaryService.getDiary(id, connectedUser));
+    }
 }
